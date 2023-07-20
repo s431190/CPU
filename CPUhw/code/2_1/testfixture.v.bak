@@ -1,0 +1,26 @@
+module testfixture;
+
+reg reset, load, clk, pmInput;
+reg [15:0]timeInput;
+wire pmNow;
+wire [15:0]timeNow;
+
+Hw2 timer(timeNow[15:12],timeNow[11:6],timeNow[5:0], pmNow, reset, load, clk, timeInput[15:12],timeInput[11:6],timeInput[5:0], pmInput);
+
+initial
+begin
+	reset = 1; #5;	//set timeInput = 0
+	reset = 0; timeInput = 16'b1100111010011110; pmInput = 0; load = 1; #5;	//set timeInput = 12:58:30
+	load = 0;
+	while(1)
+	begin
+		clk = 0; #5;
+		clk = 1; #5;
+	end
+	$stop;
+end
+
+initial
+$monitor($time," time: %d:%d:%d %s", timeNow[15:12],timeNow[11:6],timeNow[5:0],pmNow==0 ? "AM" : "PM");
+
+endmodule
